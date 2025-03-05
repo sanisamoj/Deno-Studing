@@ -3,7 +3,12 @@
     "hono": "jsr:@hono/hono@^4.7.2"
   },
   "tasks": {
-    "start": "deno run --allow-net --allow-read --allow-env --allow-sys main.ts"
+    "start": "deno run --allow-net --allow-read --allow-env --allow-sys main.ts",
+    "docker-build": "docker build -t my-app .",
+    "docker-run": "docker run -p 8000:8000 my-app",
+    "docker": "deno task docker-build && deno task docker-run",
+    "compile": "deno compile --allow-net --allow-read --allow-env --allow-sys --output main.exe main.ts",
+    "run-exe": "deno task compile && ./main.exe"
   },
   "compilerOptions": {
     "jsx": "precompile",

@@ -7,6 +7,7 @@ export const baseRouting = new Hono()
 baseRouting
     .get('/', async (context: Context) => {
         const mongodbOperations: MongodbOperations = await MongodbOperations.getInstance()
-        const response = await mongodbOperations.findAll(Collections.WORK_ORDERS, { "petShopId": "67c25136def8365f692127bc" })
+        mongodbOperations.countDocuments(Collections.PRODUCTS, { "petShopId": "67c25136def8365f692127bc" })
+        const response = await mongodbOperations.findAll(Collections.PRODUCTS, { "petShopId": "67c25136def8365f692127bc" })
         return context.json(response)
     })
