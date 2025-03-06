@@ -42,7 +42,7 @@ export class UserService {
         if (!isValidPassword) throw new Error(Errors.InvalidCredentials)
 
         const userResponse: UserResponse = UserFactory.userResponse(user)
-        const token: string = await TokenGenerator.customGenerateToken(user.id!)
+        const token: string = await TokenGenerator.customGenerateToken(userResponse.id)
         const loginResponse: loginResponse = { content: userResponse, token: token }
         return loginResponse
     }

@@ -3,5 +3,6 @@ export enum Errors {
     NoItemsWereDeleted = "No items were deleted",
     ItemAlreadyExists = "Item already exists",
     UnknownError = "Unknown error",
-    InvalidCredentials = "Invalid credentials"
+    InvalidCredentials = "Invalid credentials",
+    NoTokenInRequest = "no authorization included in request"
 }
