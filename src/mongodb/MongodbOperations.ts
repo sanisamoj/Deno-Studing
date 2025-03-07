@@ -17,7 +17,12 @@ export class MongodbOperations {
     public static async getInstance(): Promise<MongodbOperations> {
         if (!MongodbOperations.instance) {
             MongodbOperations.instance = new MongodbOperations()
-            await MongodbOperations.instance.connect()
+            try {
+                await MongodbOperations.instance.connect()
+            } catch (_error) {
+                console.log("MongoDB connection failed, try again in 30s.")
+                setTimeout(() => MongodbOperations.getInstance(), 30000)
+            }
         }
         return MongodbOperations.instance
     }

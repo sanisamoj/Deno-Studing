@@ -3,6 +3,8 @@ import { LoginRequest } from "../models/interfaces/LoginRequest.ts";
 import { BotTokenResponse } from "../models/interfaces/BotTokenResponse.ts";
 import { BotResponse } from "../models/interfaces/BotResponse.ts";
 import { MessageToSend } from "../models/interfaces/MessageToSend.ts";
+import { BotLoginRequest } from "../models/interfaces/BotLoginRequest.ts";
+import { Infos } from "../models/types/Infos.ts";
 
 export class BotApi {
     private static instance: BotApi | null = null
@@ -15,7 +17,7 @@ export class BotApi {
         timeout: 5000
     });
 
-    private constructor() {}
+    private constructor() { }
 
     public static getInstance(): BotApi {
         if (!this.instance) {
@@ -26,6 +28,25 @@ export class BotApi {
 
     public setToken(token: string) {
         BotApi.token = token
+    }
+
+    public async initialize(attempt: number = 0) {
+        const maxAttempts = 7
+        const delay = 30000
+
+        try {
+            const botLoginRequest: BotLoginRequest = { email: Deno.env.get("BOT_API_EMAIL") || "", password: Deno.env.get("BOT_API_PASSWORD") || "" }
+            const response = await this.api.post<BotTokenResponse>("/admin", botLoginRequest)
+            BotApi.token = response.data.token
+            console.log(Infos.BotApiInitialized)
+        } catch (_error: unknown) {
+            if (attempt < maxAttempts) {
+                console.log(`${Infos.BotApiInitializationFailed} | Attempt ${attempt + 1}/${maxAttempts}`)
+                setTimeout(() => this.initialize(attempt + 1), delay)
+            } else {
+                console.error(Infos.BotApiInitializationFailed)
+            }
+        }
     }
 
     public async login(loginRequest: LoginRequest): Promise<BotTokenResponse> {
@@ -45,7 +66,7 @@ export class BotApi {
     public async sendMessage(botId: string, messageToSend: MessageToSend): Promise<void> {
         await this.api.post(`/bot/${botId}/message`, messageToSend, { headers: { Authorization: `Bearer ${BotApi.token}` } })
     }
-    
+
     public async stopBot(botId: string): Promise<void> {
         await this.api.post(`/bot/${botId}/stop`, {}, { headers: { Authorization: `Bearer ${BotApi.token}` } })
     }

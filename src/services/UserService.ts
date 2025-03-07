@@ -47,7 +47,18 @@ export class UserService {
             await this.repository.updateUser(user)
             const message = `O seu código é ${code}, não compartilhe este código com ninguém. Este código estará válido apenas por 5 minutos.`
             const messageToSend: MessageToSend = { phone: user.phone, message: message }
+            const secondMessageToSend: MessageToSend = { phone: user.phone, message: code }
             this.repository.sendMessage(Config.SYSTEM_BOT_ID, messageToSend)
+            this.repository.sendMessage(Config.SYSTEM_BOT_ID, secondMessageToSend)
+
+            setTimeout(async () => {
+                const updatedUser: User | null = await this.repository.findUserByEmail(user.email);
+                if (updatedUser && updatedUser.code === code) {
+                    updatedUser.code = null
+                    await this.repository.updateUser(updatedUser)
+                }
+            }, 5 * 60 * 1000)
+            
         } else {
             if (user.code !== request.code) throw new Error(Errors.InvalidCredentials)
 
