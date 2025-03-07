@@ -1,4 +1,4 @@
-import {  MongoClient, Db, Collection, WithId, ObjectId, Document, OptionalUnlessRequiredId } from "npm:mongodb@6.1.0"
+import {  MongoClient, Db, Collection, WithId, ObjectId, Document, OptionalUnlessRequiredId, Filter } from "npm:mongodb@6.1.0"
 import "jsr:@std/dotenv/load"
 import { DateFilterType } from "./DateFilterType.ts"
 import { Collections } from "./Collections.ts"
@@ -38,7 +38,7 @@ export class MongodbOperations {
         return result.insertedId
     }
 
-    async findOne<T extends Document>(collectionName: Collections, filter: any): Promise<WithId<T> | null> {
+    async findOne<T extends Document>(collectionName: Collections, filter: Filter<T>): Promise<WithId<T> | null> {
         const collection: Collection<T> = this.db.collection(collectionName)
         return await collection.findOne(filter)
     }

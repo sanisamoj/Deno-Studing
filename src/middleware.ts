@@ -1,4 +1,4 @@
-import { JWTPayload, jwtVerify, SignJWT } from "npm:jose@5.9.6";
+import { jwtVerify } from "npm:jose@5.9.6";
 import { Context, Next } from "https://deno.land/x/oak@v12.6.1/mod.ts";
 
 const SECRET_KEY = Deno.env.get("USER_SECRET") as string
@@ -11,16 +11,16 @@ export const authMiddleware = async (context: Context, next: Next) => {
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             context.response.status = 401
             context.response.body = { error: "Token não fornecido" }
-            return;
+            return
         }
 
         const token = authHeader.split(" ")[1]
         const { payload } = await jwtVerify(token, encodedSecret)
 
-        context.state.user = payload;
+        context.state.user = payload
 
-        await next(); // Passa para a próxima função
-    } catch (error) {
+        await next()
+    } catch (_error: unknown) {
         context.response.status = 401;
         context.response.body = { error: "Token inválido ou expirado" };
     }

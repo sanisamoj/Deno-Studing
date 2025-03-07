@@ -22,10 +22,14 @@ userRouting
     })
     .post("/login", async (context: Context) => {
         const body: LoginRequest = await context.req.json()
-        const response: loginResponse = await new UserService().login(body)
-        return context.json(response)
+        const response: loginResponse | undefined = await new UserService().login(body)
+        if(response) {
+            return context.json(response)
+        } else {
+            return context.newResponse(null, 200)
+        }
     })
-    .get("/session", jwtMiddleware, async (context: Context) => {
+    .get("/session", jwtMiddleware, (context: Context) => {
         const payload = context.get('jwtPayload')
         return context.json(payload)
     })

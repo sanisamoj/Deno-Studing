@@ -18,15 +18,12 @@ export class TokenGenerator {
   }
 
   public static async customGenerateToken(userId: string): Promise<string> {
-    console.log(userId)
     const encodedSecret: Uint8Array<ArrayBufferLike> = new TextEncoder().encode(Deno.env.get("USER_SECRET"))
 
     const payload: JWTPayload = {
       sub: userId,
       id: userId
     }
-
-    console.log(payload)
 
     const jwt = await new SignJWT(payload)
       .setProtectedHeader({ alg: "HS256" })

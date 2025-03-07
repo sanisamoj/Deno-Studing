@@ -3,7 +3,7 @@ import { Config } from "./Config.ts"
 import { userRouting } from "./routing/userRouting.ts"
 import { errorHandler } from "./errors/errorHandler.ts"
 
-await Config.initializeDatabase()
+Config.initializeSystem()
 
 const app = new Hono()
 app.route("/users", userRouting)
