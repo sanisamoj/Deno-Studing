@@ -1,6 +1,6 @@
-import { User } from "../data/models/interfaces/User.ts"
-import {  Document } from "npm:mongodb@6.1.0"
-import { UserResponse } from "../data/models/interfaces/UserResponse.ts"
+import { Document } from "npm:mongodb@6.1.0";
+import { User } from "../../data/models/interfaces/User.ts"
+import { UserResponse } from "../../data/models/interfaces/UserResponse.ts"
 
 export class UserFactory {
     static userResponse(user: User & Document): UserResponse {

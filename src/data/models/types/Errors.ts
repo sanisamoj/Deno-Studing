@@ -4,5 +4,6 @@ export enum Errors {
     ItemAlreadyExists = "Item already exists",
     UnknownError = "Unknown error",
     InvalidCredentials = "Invalid credentials",
-    NoTokenInRequest = "no authorization included in request"
+    NoTokenInRequest = "no authorization included in request",
+    UserDoesNotHavePermission = "User does not have permission"
 }

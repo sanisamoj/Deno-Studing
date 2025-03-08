@@ -18,6 +18,8 @@ export const errorHandler = (error: Error, context: Context) => {
             return context.json({ message: error.message }, 409)
         case Errors.InvalidCredentials:
             return context.json({ message: error.message }, 401)
+        case Errors.UserDoesNotHavePermission:
+            return context.json({ message: error.message }, 403)
         default:
             return context.json({ message: Errors.UnknownError }, 500)
     }

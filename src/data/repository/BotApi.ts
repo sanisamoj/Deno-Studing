@@ -5,6 +5,8 @@ import { BotResponse } from "../models/interfaces/BotResponse.ts";
 import { MessageToSend } from "../models/interfaces/MessageToSend.ts";
 import { BotLoginRequest } from "../models/interfaces/BotLoginRequest.ts";
 import { Infos } from "../models/types/Infos.ts";
+import { Config } from "../../Config.ts";
+import { BotCreateRequest } from "../models/interfaces/BotCreateRequest.ts";
 
 export class BotApi {
     private static instance: BotApi | null = null
@@ -13,7 +15,7 @@ export class BotApi {
     private customPaginationParams = { page: 1, pageSize: 10 }
 
     private api = axiod.create({
-        baseURL: "http://localhost:8585",
+        baseURL: Config.BOT_API_URL,
         timeout: 5000
     });
 
@@ -49,6 +51,11 @@ export class BotApi {
         }
     }
 
+    public async createBot(request: BotCreateRequest): Promise<BotResponse> {
+        const response = await this.api.post<BotResponse>("/bot", request, { headers: { Authorization: `Bearer ${BotApi.token}` } })
+        return response.data
+    }
+
     public async login(loginRequest: LoginRequest): Promise<BotTokenResponse> {
         const response = await this.api.post<BotTokenResponse>("/admin", loginRequest)
         return response.data
@@ -64,7 +71,11 @@ export class BotApi {
     }
 
     public async sendMessage(botId: string, messageToSend: MessageToSend): Promise<void> {
-        await this.api.post(`/bot/${botId}/message`, messageToSend, { headers: { Authorization: `Bearer ${BotApi.token}` } })
+        try {
+            await this.api.post(`/bot/${botId}/message`, messageToSend, { headers: { Authorization: `Bearer ${BotApi.token}` } })
+        } catch (_error) {
+            console.error("Error sending message:", _error)
+        }
     }
 
     public async stopBot(botId: string): Promise<void> {

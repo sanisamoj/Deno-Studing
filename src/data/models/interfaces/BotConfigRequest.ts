@@ -1,10 +1,6 @@
 export interface BotConfigRequest {
-    name?: string
-    description?: string
-    callPermission: boolean
-    automaticCallMessage?: string
-    queueRabbitMqPermission: boolean
-    queueRabbitMqHandleMessage: string
-    queueRabbitMqBotStatus: string
-    saveMediaInServer: boolean
+    automaticMessagePermission: boolean | null
+    automaticMessage: string | null
+    callPermission: boolean | null
+    automaticCallMessage: string | null
 }
