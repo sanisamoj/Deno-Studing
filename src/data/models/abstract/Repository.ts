@@ -13,6 +13,7 @@ export abstract class Repository {
     public abstract createBot(request: BotCreateRequest): Promise<Bot>
     public abstract findBotById(botId: string): Promise<Bot>
     public abstract getAllBotFromTheUser(userId: string): Promise<Bot[]>
+    public abstract updateBot(bot: Bot): Promise<Bot>
     public abstract deleteBot(botId: string): Promise<void>
     public abstract sendMessage(botId: string, messageToSend: MessageToSend): Promise<void>
 }

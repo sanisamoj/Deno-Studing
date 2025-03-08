@@ -1,8 +1,10 @@
 import { Repository } from "../../data/models/abstract/Repository.ts";
 import { Bot } from "../../data/models/interfaces/Bot.ts";
 import { BotCreateRequest } from "../../data/models/interfaces/BotCreateRequest.ts";
+import { BotResponse } from "../../data/models/interfaces/BotResponse.ts";
 import { User } from "../../data/models/interfaces/User.ts";
 import { Errors } from "../../data/models/types/Errors.ts";
+import { BotApi } from "../../data/repository/BotApi.ts";
 import { DefaultRepository } from "../../data/repository/DefaultRepository.ts";
 import { mapDocument } from "../../utils/mapDocument.ts";
 
@@ -26,8 +28,8 @@ export class BotService {
     }
 
     public async findBotById(botId: string): Promise<Bot> {
-        const botResponse: Bot = await this.repository.findBotById(botId)
-        return mapDocument(botResponse)
+        const bot: Bot = await this.repository.findBotById(botId)
+        return mapDocument(bot)
     }
 
     public async getAllBotsFromTheUser(userId: string): Promise<Bot[]> {

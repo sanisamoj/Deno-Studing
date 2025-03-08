@@ -76,20 +76,60 @@ export class DefaultRepository extends Repository {
     }
 
     public override async findBotById(botId: string): Promise<Bot> {
-        const mongodbOperations = await MongodbOperations.getInstance()
-        const bot: Bot & Document | null = await mongodbOperations.findOne(Collections.BOTS, { _id: new ObjectId(botId) })
-        if (!bot) throw new Error(Errors.ItemNotFound)
-        return bot
+        try {
+            const response: BotResponse = await this.findBotByIdInApi(botId)
+            const mongodbOperations = await MongodbOperations.getInstance()
+            const bot: Bot & Document | null = await mongodbOperations.findOne(Collections.BOTS, { _id: new ObjectId(botId) })
+            if (!bot) throw new Error(Errors.ItemNotFound)
+
+            bot.status = response.status
+            bot.qrCode = response.qrCode
+
+            return bot
+        } catch (_error) {
+            throw new Error(Errors.ItemNotFound)
+        }
     }
+
     public override async getAllBotFromTheUser(userId: string): Promise<Bot[]> {
         const mongodbOperations = await MongodbOperations.getInstance()
         const bots: Bot[] = await mongodbOperations.findAll(Collections.BOTS, { userId: userId })
+
+        if (bots.length > 0) {
+            await Promise.all(
+                bots.map(async (bot: Bot & Document) => {
+                    try {
+                        const response: BotResponse = await this.findBotByIdInApi(bot._id.toString())
+                        bot.status = response.status
+                        bot.qrCode = response.qrCode
+                        bot.id = response.id
+                        await mongodbOperations.updateItem<Bot>(Collections.BOTS, { _id: bot._id }, bot)
+                    } catch (error) {
+                        console.error(`Erro ao buscar dados do bot ${bot.id}:`, error)
+                    }
+                })
+            )
+        }
+
         return bots
+    }
+
+    public override async updateBot(bot: Bot): Promise<Bot> {
+        const { id, ...botToUpdate } = bot
+        const mongodbOperations = await MongodbOperations.getInstance()
+        const updatedBot: Bot = await mongodbOperations.updateItem<Bot>(Collections.BOTS, { _id: new ObjectId(id) }, botToUpdate)
+
+        return updatedBot
     }
 
     public override async sendMessage(botId: string, messageToSend: MessageToSend): Promise<void> {
         const botApi = BotApi.getInstance()
         await botApi.sendMessage(botId, messageToSend)
+    }
+
+    private async findBotByIdInApi(botId: string): Promise<BotResponse> {
+        const botApi = BotApi.getInstance()
+        return await botApi.getBot(botId)
     }
 
 }

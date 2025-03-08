@@ -6,6 +6,7 @@ export abstract class Config {
     public static BOT_API_URL: string = Deno.env.get("BOT_API_URL") || ""
     public static SYSTEM_BOT_ID: string = Deno.env.get("BOT_ID") || ""
     public static USER_SECRET_KEY = Deno.env.get("USER_SECRET") as string
+    public static BOT_SECRET_KEY = Deno.env.get("BOT_SECRET") as string
 
     public static initializeSystem() {
         this.initializeDatabase()

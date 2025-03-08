@@ -3,7 +3,7 @@ import { Errors } from "../data/models/types/Errors.ts";
 import { HTTPException } from "hono/http-exception";
 
 export const errorHandler = (error: Error, context: Context) => {
-    console.log(error.message)
+    console.log("error message: ", error.message)
 
     if (error instanceof HTTPException) {
         return error.getResponse()

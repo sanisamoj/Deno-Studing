@@ -32,4 +32,22 @@ export class TokenGenerator {
 
     return jwt
   }
+
+  public static async botGenerateToken(userId: string): Promise<string> {
+    const encodedSecret: Uint8Array<ArrayBufferLike> = new TextEncoder().encode(Deno.env.get("BOT_SECRET"))
+
+    const payload: JWTPayload = {
+      sub: userId,
+      id: userId
+    }
+
+    const jwt = await new SignJWT(payload)
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime("365d")
+      .sign(encodedSecret)
+
+    return jwt
+  }
+
 }

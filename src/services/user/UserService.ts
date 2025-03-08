@@ -33,7 +33,6 @@ export class UserService {
         }
 
         const savedUser: User = await this.repository.saveUser(user)
-        console.log(savedUser)
         return UserFactory.userResponse(savedUser)
     }
 
@@ -44,7 +43,6 @@ export class UserService {
         if (!request.code) {
             const code: string = generateVerificationCode()
             user.code = code
-            console.log(user)
             await this.repository.updateUser(user)
             const message = `O seu código é ${code}, não compartilhe este código com ninguém. Este código estará válido apenas por 5 minutos.`
             const messageToSend: MessageToSend = { phone: user.phone, message: message }

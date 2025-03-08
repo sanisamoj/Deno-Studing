@@ -33,3 +33,4 @@ userRouting
         const response: UserResponse = await new UserService().session(payload.id)
         return context.json(response)
     })
+    
